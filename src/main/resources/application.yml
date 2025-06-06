@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: DesignPatterns
+  datasource:
+    url: jdbc:postgresql://ep-fancy-bird-a5xs1wn8.us-east-2.aws.neon.tech/neondb?sslmode=require
+    username: neondb_owner
+    password: npg_JhlmkyMNFc46
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
