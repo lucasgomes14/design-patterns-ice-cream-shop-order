@@ -1,45 +1,61 @@
 package com.iceCreamShop.DesignPatterns.model;
 
-import jakarta.persistence.*;
-import lombok.Data;
+import com.iceCreamShop.DesignPatterns.factory.IceCream;
+import com.iceCreamShop.DesignPatterns.observer.OrderObserver;
+import com.iceCreamShop.DesignPatterns.state.OrderReceivedState;
+import com.iceCreamShop.DesignPatterns.state.OrderState;
+import com.iceCreamShop.DesignPatterns.strategy.DiscountStrategy;
+import com.iceCreamShop.DesignPatterns.strategy.NoDiscount;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-@Data
-@Entity
-@Table(name = "tb_order")
 public class Order {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private static final AtomicInteger idCounter = new AtomicInteger(0);
+    private int id;
+    private Customer customer;
+    private IceCream iceCream;
+    private OrderState state;
+    private DiscountStrategy discountStrategy;
+    private List<OrderObserver> observers = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ItemOrder> items = new ArrayList<>();
-
-    @Column(name = "total_price", precision = 10, scale = 2)
-    private BigDecimal totalPrice;
-
-    private LocalDateTime createdAt;
-
-    @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "client_id")
-    private Client client;
-
-    public void addItem(ItemOrder item) {
-        items.add(item);
-        item.setOrder(this);
-        calculateTotal();
+    public Order(Customer customer, IceCream iceCream) {
+        this.id = idCounter.incrementAndGet();
+        this.customer = customer;
+        this.iceCream = iceCream;
+        this.state = new OrderReceivedState();
+        this.discountStrategy = new NoDiscount(); // Default strategy
     }
 
-    public void calculateTotal() {
-        this.totalPrice = items.stream()
-                .map(ItemOrder::getSubTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public void setState(OrderState newState) {
+        this.state = newState;
+        System.out.printf("Order #%d changed state to: %s\n", id, state.getDescription());
+        notifyObservers();
     }
+
+    public void advanceState() { state.advance(this); }
+    public void cancel() { state.cancel(this); }
+
+    public void addObserver(OrderObserver observer) { observers.add(observer); }
+    public void notifyObservers() {
+        for (OrderObserver observer : observers) {
+            observer.update(this);
+        }
+    }
+
+    public double getItemsTotalPrice() { return iceCream.getPrice(); }
+
+    public double getFinalPrice() {
+        double total = getItemsTotalPrice();
+        double discount = discountStrategy.calculateDiscount(this);
+        return total - discount;
+    }
+
+    // Getters and Setters
+    public int getId() { return id; }
+    public Customer getCustomer() { return customer; }
+    public IceCream getIceCream() { return iceCream; }
+    public OrderState getState() { return state; }
+    public void setDiscountStrategy(DiscountStrategy discountStrategy) { this.discountStrategy = discountStrategy; }
 }

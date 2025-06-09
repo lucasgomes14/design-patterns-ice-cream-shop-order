@@ -1,7 +1,11 @@
 package com.iceCreamShop.DesignPatterns.repository;
 
 import com.iceCreamShop.DesignPatterns.model.Order;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.List;
+import java.util.Optional;
 
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository {
+    void save(Order order);
+    Optional<Order> findById(int id);
+    List<Order> findAll();
 }
