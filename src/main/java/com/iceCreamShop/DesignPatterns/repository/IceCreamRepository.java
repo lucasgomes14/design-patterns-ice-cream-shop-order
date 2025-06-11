@@ -1,9 +1,9 @@
 package com.iceCreamShop.DesignPatterns.repository;
 
-import com.iceCreamShop.DesignPatterns.model.Order;
+import com.iceCreamShop.DesignPatterns.factory.IceCream;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface IceCreamRepository extends JpaRepository<IceCream, Long> {
 }

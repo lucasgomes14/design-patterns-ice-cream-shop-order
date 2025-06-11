@@ -1,11 +1,11 @@
 package com.iceCreamShop.DesignPatterns.command;
 
 import com.iceCreamShop.DesignPatterns.model.Order;
+import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public class CancelOrderCommand implements Command {
     private Order order;
-
-    public CancelOrderCommand(Order order) { this.order = order; }
 
     @Override
     public void execute() {

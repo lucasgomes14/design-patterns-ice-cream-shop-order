@@ -1,12 +1,39 @@
 package com.iceCreamShop.DesignPatterns.factory;
 
-public class Popsicle implements IceCream {
-    private String flavor;
-    public Popsicle(String flavor) { this.flavor = flavor; }
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@Entity
+@DiscriminatorValue("popsicle")
+public class Popsicle extends IceCream {
+    public Popsicle(String flavor, double unitPrice, int quantity, TypeIceCream type) {
+        super(flavor, unitPrice, quantity, type);
+    }
 
     @Override
-    public String getDescription() { return "Popsicle, " + flavor + " flavor"; }
+    public String getDescription() {
+        return "Popsicle, " + flavor + " flavor";
+    }
 
     @Override
-    public double getPrice() { return 5.00; }
+    public double getUnitPrice() {
+        return unitPrice;
+    }
+
+    @Override
+    public int getQuantity() {
+        return quantity;
+    }
+
+    @Override
+    public double getTotalPrice() {
+        return unitPrice * quantity;
+    }
+
+    @Override
+    public TypeIceCream getType() {
+        return type;
+    }
 }

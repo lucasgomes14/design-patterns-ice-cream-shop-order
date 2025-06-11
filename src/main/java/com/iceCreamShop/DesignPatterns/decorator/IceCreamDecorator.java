@@ -1,17 +1,27 @@
 package com.iceCreamShop.DesignPatterns.decorator;
 
 import com.iceCreamShop.DesignPatterns.factory.IceCream;
+import jakarta.persistence.Transient;
+import lombok.AllArgsConstructor;
 
-public abstract class IceCreamDecorator implements IceCream {
+@AllArgsConstructor
+public abstract class IceCreamDecorator extends IceCream {
+
+    @Transient
     protected IceCream decoratedIceCream;
 
-    public IceCreamDecorator(IceCream iceCream) {
-        this.decoratedIceCream = iceCream;
+    @Override
+    public String getFlavor() {
+        return decoratedIceCream.getFlavor();
     }
 
     @Override
-    public String getDescription() { return decoratedIceCream.getDescription(); }
+    public String getDescription() {
+        return decoratedIceCream.getDescription();
+    }
 
     @Override
-    public double getPrice() { return decoratedIceCream.getPrice(); }
+    public double getUnitPrice() {
+        return decoratedIceCream.getUnitPrice();
+    }
 }

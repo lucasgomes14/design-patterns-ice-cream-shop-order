@@ -1,10 +1,12 @@
 package com.iceCreamShop.DesignPatterns.facade;
 
+import com.iceCreamShop.DesignPatterns.model.DiscountType;
 import com.iceCreamShop.DesignPatterns.model.Order;
 import com.iceCreamShop.DesignPatterns.observer.CustomerObserver;
 import com.iceCreamShop.DesignPatterns.repository.OrderRepository;
 import com.iceCreamShop.DesignPatterns.singleton.OrderQueue;
 import com.iceCreamShop.DesignPatterns.strategy.FrequentCustomerDiscount;
+import com.iceCreamShop.DesignPatterns.strategy.NoDiscount;
 import com.iceCreamShop.DesignPatterns.strategy.SeasonalDiscount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,19 +22,36 @@ public class IceCreamShopFacade {
         this.orderQueue = OrderQueue.getInstance();
     }
 
-    public void registerNewOrder(Order order, String discountType) {
-        if ("frequent".equalsIgnoreCase(discountType)) {
-            order.setDiscountStrategy(new FrequentCustomerDiscount());
-        } else if ("seasonal".equalsIgnoreCase(discountType)) {
-            order.setDiscountStrategy(new SeasonalDiscount());
+    public void registerNewOrder(Order order, DiscountType discountType) {
+        switch (discountType) {
+            case FREQUENT -> order.setDiscountStrategy(new FrequentCustomerDiscount());
+            case SEASONAL -> order.setDiscountStrategy(new SeasonalDiscount());
+            case NONE -> order.setDiscountStrategy(new NoDiscount());
         }
+
+        order.setTotal();
         order.addObserver(new CustomerObserver());
-        orderRepository.save(order);
+        order = orderRepository.save(order);
+        order.initTransientFields();
         orderQueue.addOrder(order);
+
+        if (orderQueue.size() == 1) {
+            order.advanceState();
+            orderRepository.save(order);
+        }
     }
 
-    public void advanceOrderStatus(int orderId) {
-        orderRepository.findById(orderId).ifPresent(Order::advanceState);
+    public void advanceOrderStatus() {
+        Order nextOrder = orderQueue.peek();
+
+        if (nextOrder != null) {
+            nextOrder.advanceState();
+            orderRepository.save(nextOrder);
+        }
+
+        else {
+            throw new RuntimeException("No order in queue");
+        }
     }
 
     public void processNextInQueue() {

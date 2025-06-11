@@ -4,14 +4,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class IceCreamFactory {
-    public IceCream createIceCream(String type, String flavor) {
-        if ("scoop".equalsIgnoreCase(type)) {
-            return new ScoopIceCream(flavor);
-        } else if ("popsicle".equalsIgnoreCase(type)) {
-            return new Popsicle(flavor);
-        } else if ("milkshake".equalsIgnoreCase(type)) {
-            return new Milkshake(flavor);
-        }
-        throw new IllegalArgumentException("Unknown ice cream type: " + type);
+    public IceCream createIceCream(TypeIceCream type, String flavor, int quantity) {
+        return switch (type) {
+            case SCOOP_ICE_CREAM -> new ScoopIceCream(flavor, 8.00, quantity, type);
+            case POPSICLE -> new Popsicle(flavor, 5.00, quantity, type);
+            case MILKSHAKE -> new Milkshake(flavor, 12.50, quantity, type);
+            default -> throw new IllegalArgumentException("Unsupported ice cream type: " + type);
+        };
     }
 }
