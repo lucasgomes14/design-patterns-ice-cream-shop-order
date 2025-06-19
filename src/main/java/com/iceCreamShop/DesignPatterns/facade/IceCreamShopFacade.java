@@ -1,5 +1,6 @@
 package com.iceCreamShop.DesignPatterns.facade;
 
+import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.model.DiscountType;
 import com.iceCreamShop.DesignPatterns.model.Order;
 import com.iceCreamShop.DesignPatterns.observer.CustomerObserver;
@@ -22,7 +23,7 @@ public class IceCreamShopFacade {
         this.orderQueue = OrderQueue.getInstance();
     }
 
-    public void registerNewOrder(Order order, DiscountType discountType) {
+    public void registerNewOrder(Order order, DiscountType discountType) throws OrderStateException {
         switch (discountType) {
             case FREQUENT -> order.setDiscountStrategy(new FrequentCustomerDiscount());
             case SEASONAL -> order.setDiscountStrategy(new SeasonalDiscount());
@@ -41,7 +42,7 @@ public class IceCreamShopFacade {
         }
     }
 
-    public void advanceOrderStatus() {
+    public void advanceOrderStatus() throws OrderStateException {
         Order nextOrder = orderQueue.peek();
 
         if (nextOrder != null) {
@@ -50,7 +51,7 @@ public class IceCreamShopFacade {
         }
 
         else {
-            throw new RuntimeException("No order in queue");
+            throw new RuntimeException();
         }
     }
 

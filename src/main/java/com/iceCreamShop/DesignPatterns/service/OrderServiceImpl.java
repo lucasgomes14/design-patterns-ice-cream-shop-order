@@ -7,6 +7,8 @@ import com.iceCreamShop.DesignPatterns.dto.request.ComplexOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.request.SimpleOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.CustomerResponseDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.OrderResponseDTO;
+import com.iceCreamShop.DesignPatterns.exception.IceCreamTypeNotSupportedException;
+import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.facade.IceCreamShopFacade;
 import com.iceCreamShop.DesignPatterns.factory.IceCream;
 import com.iceCreamShop.DesignPatterns.factory.IceCreamFactory;
@@ -42,7 +44,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createSimpleOrder(SimpleOrderRequestDTO request) {
+    public void createSimpleOrder(SimpleOrderRequestDTO request) throws IceCreamTypeNotSupportedException, OrderStateException {
         Customer customer = saveCustomer(request.customerName());
         List<IceCream> iceCreamList = new ArrayList<>();
 
@@ -56,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createComplexOrder(ComplexOrderRequestDTO request) {
+    public void createComplexOrder(ComplexOrderRequestDTO request) throws IceCreamTypeNotSupportedException, OrderStateException {
         Customer customer = saveCustomer(request.customerName());
         List<IceCream> iceCreamList = new ArrayList<>();
 
@@ -70,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void advanceOrderStatus() {
+    public void advanceOrderStatus() throws OrderStateException {
         Order order = orderQueue.peek();
 
         if (order.getStatus() == OrderStatus.CANCELLED) {
@@ -87,11 +89,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void cancelOrder(Long orderId) {
+    public void cancelOrder(Long orderId) throws OrderStateException {
         Order order = getOrderById(orderId);
 
         if (order.getStatus() == OrderStatus.DELIVERED || order.getStatus() == OrderStatus.CANCELLED) {
-            throw new IllegalStateException("This order cannot be cancelled.");
+            throw new OrderStateException();
         }
 
         if (order.equals(orderQueue.peek())) {
@@ -145,7 +147,7 @@ public class OrderServiceImpl implements OrderService {
         return customerRepository.save(customer);
     }
 
-    private IceCream saveIceCream(TypeIceCream typeIceCream, String flavor, int quantity) {
+    private IceCream saveIceCream(TypeIceCream typeIceCream, String flavor, int quantity) throws IceCreamTypeNotSupportedException {
         IceCream iceCream = factory.createIceCream(typeIceCream, flavor, quantity);
 
         return iceCreamRepository.save(iceCream);

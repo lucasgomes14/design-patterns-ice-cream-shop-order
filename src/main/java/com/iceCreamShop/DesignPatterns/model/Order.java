@@ -2,6 +2,7 @@ package com.iceCreamShop.DesignPatterns.model;
 
 import com.iceCreamShop.DesignPatterns.decorator.SyrupDecorator;
 import com.iceCreamShop.DesignPatterns.decorator.WhippedCreamDecorator;
+import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.factory.IceCream;
 import com.iceCreamShop.DesignPatterns.observer.OrderObserver;
 import com.iceCreamShop.DesignPatterns.state.*;
@@ -67,25 +68,25 @@ public class Order {
         }
     }
 
-    public void setState(OrderState newState) {
+    public void setState(OrderState newState) throws OrderStateException {
         this.state = newState;
         this.status = mapStateToStatus(newState);
         System.out.printf("Order #%d changed state to: %s\n", id, state.getDescription());
         notifyObservers();
     }
 
-    private OrderStatus mapStateToStatus(OrderState state) {
+    private OrderStatus mapStateToStatus(OrderState state) throws OrderStateException {
         if (state instanceof OrderReceivedState) return OrderStatus.RECEIVED;
         if (state instanceof OrderReadyState) return OrderStatus.READY;
         if (state instanceof OrderInPreparationState) return OrderStatus.IN_PREPARATION;
         if (state instanceof OrderDeliveredState) return OrderStatus.DELIVERED;
         if (state instanceof OrderCancelledState) return OrderStatus.CANCELLED;
-        throw new IllegalStateException("Unknown state");
+        throw new OrderStateException("Unknown state");
     }
 
-    public void advanceState() { state.advance(this); }
+    public void advanceState() throws OrderStateException { state.advance(this); }
 
-    public void cancel() { state.cancel(this); }
+    public void cancel() throws OrderStateException { state.cancel(this); }
 
     public void addObserver(OrderObserver observer) {
         observers.add(observer);
