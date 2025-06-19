@@ -55,7 +55,7 @@ public class IceCreamShopFacade {
         }
     }
 
-    public void processNextInQueue() {
+    public void processNextInQueue() throws OrderStateException {
         Order order = orderQueue.processNextOrder();
         if (order != null) {
             orderRepository.save(order);

@@ -4,6 +4,8 @@ import com.iceCreamShop.DesignPatterns.dto.request.ComplexOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.request.SimpleOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.CustomerResponseDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.OrderResponseDTO;
+import com.iceCreamShop.DesignPatterns.exception.IceCreamTypeNotSupportedException;
+import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.model.Order;
 import com.iceCreamShop.DesignPatterns.service.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -22,28 +24,28 @@ public class OrderControllerImpl implements OrderController {
     private final OrderService orderService;
 
     @Override
-    public ResponseEntity<Void> createSimpleOrder(SimpleOrderRequestDTO request) {
+    public ResponseEntity<Void> createSimpleOrder(SimpleOrderRequestDTO request) throws OrderStateException, IceCreamTypeNotSupportedException {
         orderService.createSimpleOrder(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
-    public ResponseEntity<Void> createComplexOrder(ComplexOrderRequestDTO request) {
+    public ResponseEntity<Void> createComplexOrder(ComplexOrderRequestDTO request) throws OrderStateException, IceCreamTypeNotSupportedException {
         orderService.createComplexOrder(request);
 
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @Override
-    public ResponseEntity<Void> advanceOrderStatus() {
+    public ResponseEntity<Void> advanceOrderStatus() throws OrderStateException {
         orderService.advanceOrderStatus();
 
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @Override
-    public ResponseEntity<Void> cancelOrder(Long orderId) {
+    public ResponseEntity<Void> cancelOrder(Long orderId) throws OrderStateException {
         orderService.cancelOrder(orderId);
 
         return ResponseEntity.status(HttpStatus.OK).build();

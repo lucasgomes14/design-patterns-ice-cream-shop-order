@@ -4,6 +4,8 @@ import com.iceCreamShop.DesignPatterns.dto.request.ComplexOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.request.SimpleOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.CustomerResponseDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.OrderResponseDTO;
+import com.iceCreamShop.DesignPatterns.exception.IceCreamTypeNotSupportedException;
+import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.model.Order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -25,7 +27,7 @@ public interface OrderController {
             @ApiResponse(responseCode = "500", description = "Erro inesperado")
     })
     @PostMapping("/simple")
-    ResponseEntity<Void> createSimpleOrder(@RequestBody @Valid SimpleOrderRequestDTO request);
+    ResponseEntity<Void> createSimpleOrder(@RequestBody @Valid SimpleOrderRequestDTO request) throws OrderStateException, IceCreamTypeNotSupportedException;
 
     @Operation(
             summary = "Criar um pedido complexo",
@@ -37,7 +39,7 @@ public interface OrderController {
             @ApiResponse(responseCode = "500", description = "Erro inesperado")
     })
     @PostMapping("/complex")
-    ResponseEntity<Void> createComplexOrder(@RequestBody @Valid ComplexOrderRequestDTO request);
+    ResponseEntity<Void> createComplexOrder(@RequestBody @Valid ComplexOrderRequestDTO request) throws OrderStateException, IceCreamTypeNotSupportedException;
 
     @Operation(
             summary = "Avançar status de um pedido",
@@ -50,7 +52,7 @@ public interface OrderController {
             @ApiResponse(responseCode = "500", description = "Erro inesperado")
     })
     @PostMapping("/advance-status")
-    ResponseEntity<Void> advanceOrderStatus();
+    ResponseEntity<Void> advanceOrderStatus() throws OrderStateException;
 
     @Operation(
             summary = "Cancelar um pedido",
@@ -63,7 +65,7 @@ public interface OrderController {
             @ApiResponse(responseCode = "500", description = "Erro inesperado")
     })
     @PostMapping("/{orderId}/cancel")
-    ResponseEntity<Void> cancelOrder(@PathVariable Long orderId);
+    ResponseEntity<Void> cancelOrder(@PathVariable Long orderId) throws OrderStateException;
 
     @Operation(
             summary = "Listar todos os pedidos",

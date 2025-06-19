@@ -1,5 +1,6 @@
 package com.iceCreamShop.DesignPatterns.singleton;
 
+import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.model.Order;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class OrderQueue {
         System.out.printf("Order #%d added to the queue. Items in queue: %d\n", order.getId(), queue.size());
     }
 
-    public Order processNextOrder() {
+    public Order processNextOrder() throws OrderStateException {
         if (queue.isEmpty()) {
             System.out.println("Order queue is empty.");
             return null;
