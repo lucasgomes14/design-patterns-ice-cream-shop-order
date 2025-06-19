@@ -2,7 +2,8 @@ package com.iceCreamShop.DesignPatterns.service;
 
 import com.iceCreamShop.DesignPatterns.command.CancelOrderCommand;
 import com.iceCreamShop.DesignPatterns.command.Command;
-import com.iceCreamShop.DesignPatterns.dto.IceCreamDTO;
+import com.iceCreamShop.DesignPatterns.dto.IceCreamComplexDTO;
+import com.iceCreamShop.DesignPatterns.dto.IceCreamSimpleDTO;
 import com.iceCreamShop.DesignPatterns.dto.request.ComplexOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.request.SimpleOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.CustomerResponseDTO;
@@ -48,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = saveCustomer(request.customerName());
         List<IceCream> iceCreamList = new ArrayList<>();
 
-        for (IceCreamDTO iceCream : request.iceCreams()) {
+        for (IceCreamSimpleDTO iceCream : request.iceCreams()) {
 
             iceCreamList.add(saveIceCream(iceCream.iceCreamType(), iceCream.flavor(), iceCream.quantity()));
         }
@@ -62,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = saveCustomer(request.customerName());
         List<IceCream> iceCreamList = new ArrayList<>();
 
-        for (IceCreamDTO dto : request.iceCreams()) {
+        for (IceCreamComplexDTO dto : request.iceCreams()) {
             IceCream saved = saveIceCream(dto.iceCreamType(), dto.flavor(), dto.quantity());
             iceCreamList.add(saved);
         }
@@ -172,10 +173,10 @@ public class OrderServiceImpl implements OrderService {
         List<OrderResponseDTO> orderResponseDTOList = new ArrayList<>();
 
         for (Order order : orders) {
-            List<IceCreamDTO> iceCreamList = new ArrayList<>();
+            List<IceCreamComplexDTO> iceCreamList = new ArrayList<>();
 
             for (IceCream iceCream : order.getIceCreams()) {
-                iceCreamList.add(new IceCreamDTO(iceCream.getType(), iceCream.getFlavor(), iceCream.getOrder().isAddSyrup(), iceCream.getOrder().isAddWhippedCream(), iceCream.getQuantity()));
+                iceCreamList.add(new IceCreamComplexDTO(iceCream.getType(), iceCream.getFlavor(), iceCream.getOrder().isAddSyrup(), iceCream.getOrder().isAddWhippedCream(), iceCream.getQuantity()));
             }
             orderResponseDTOList.add(new OrderResponseDTO(order.getCustomer().getName(), iceCreamList, order.getTotal(), order.getOrderDate(), order.getStatus()));
         }

@@ -19,7 +19,7 @@ import java.util.List;
 public interface OrderController {
     @Operation(
             summary = "Criar um pedido simples",
-            description = "Recebe por parâmetro nome do cliente, tipo de sorvete e sabor"
+            description = "Recebe por parâmetro nome do cliente, tipo de sorvete(MILKSHAKE, POPSICLE, SCOOP_ICE_CREAM) e sabor"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Pedido anotado"),
@@ -31,7 +31,7 @@ public interface OrderController {
 
     @Operation(
             summary = "Criar um pedido complexo",
-            description = "Recebe por parâmetro nome do cliente, tipo de sorvete, sabor, calda, chantilly, se é frequente ou não"
+            description = "Recebe por parâmetro nome do cliente, tipo de sorvete(MILKSHAKE, POPSICLE, SCOOP_ICE_CREAM), sabor, calda, chantilly, se é frequente ou não"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Pedido anotado"),
@@ -43,7 +43,7 @@ public interface OrderController {
 
     @Operation(
             summary = "Avançar status de um pedido",
-            description = "Modifica o status do pedido específico"
+            description = "Modifica o status do pedido que está em primeiro na fila"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Status avançou"),
