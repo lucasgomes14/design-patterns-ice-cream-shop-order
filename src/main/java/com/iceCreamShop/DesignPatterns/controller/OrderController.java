@@ -90,7 +90,7 @@ public interface OrderController {
             @ApiResponse(responseCode = "500", description = "Erro inesperado")
     })
     @GetMapping("/{orderId}")
-    ResponseEntity<Order> getOrderById(@PathVariable Long orderId);
+    ResponseEntity<OrderResponseDTO> getOrderById(@PathVariable Long orderId);
 
     @Operation(
             summary = "Obter a fila de pedidos",

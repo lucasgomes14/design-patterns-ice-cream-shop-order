@@ -16,7 +16,7 @@ public interface OrderService {
     void advanceOrderStatus() throws OrderStateException;
     void cancelOrder(Long orderId) throws OrderStateException;
     List<OrderResponseDTO> getAllOrders();
-    Order getOrderById(Long orderId);
+    OrderResponseDTO getOrderById(Long orderId);
     List<OrderResponseDTO> getOrdersInQueue();
 
     List<CustomerResponseDTO> getConsumers();

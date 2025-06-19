@@ -59,8 +59,10 @@ public class OrderControllerImpl implements OrderController {
     }
 
     @Override
-    public ResponseEntity<Order> getOrderById(Long orderId) {
-        return null;
+    public ResponseEntity<OrderResponseDTO> getOrderById(Long orderId) {
+        OrderResponseDTO order = orderService.getOrderById(orderId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(order);
     }
 
     @Override

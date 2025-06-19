@@ -9,6 +9,7 @@ import com.iceCreamShop.DesignPatterns.dto.request.SimpleOrderRequestDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.CustomerResponseDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.OrderResponseDTO;
 import com.iceCreamShop.DesignPatterns.exception.IceCreamTypeNotSupportedException;
+import com.iceCreamShop.DesignPatterns.exception.OrderNotFoundException;
 import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
 import com.iceCreamShop.DesignPatterns.facade.IceCreamShopFacade;
 import com.iceCreamShop.DesignPatterns.factory.IceCream;
@@ -91,7 +92,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void cancelOrder(Long orderId) throws OrderStateException {
-        Order order = getOrderById(orderId);
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found"));;
 
         if (order.getStatus() == OrderStatus.DELIVERED || order.getStatus() == OrderStatus.CANCELLED) {
             throw new OrderStateException();
@@ -119,8 +120,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(Long orderId) {
-        return orderRepository.findById(orderId).orElseThrow(() -> new RuntimeException("Order not found"));
+    public OrderResponseDTO getOrderById(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("Order not found"));
+
+        return getOrderResponse(order);
     }
 
     @Override
@@ -167,6 +170,16 @@ public class OrderServiceImpl implements OrderService {
         order.setIceCreams(iceCreams);
 
         return order;
+    }
+
+    private OrderResponseDTO getOrderResponse(Order order) {
+        List<IceCreamComplexDTO> iceCreamList = new ArrayList<>();
+
+        for (IceCream iceCream : order.getIceCreams()) {
+            iceCreamList.add(new IceCreamComplexDTO(iceCream.getType(), iceCream.getFlavor(), iceCream.getOrder().isAddSyrup(), iceCream.getOrder().isAddWhippedCream(), iceCream.getQuantity()));
+        }
+
+        return new OrderResponseDTO(order.getCustomer().getName(), iceCreamList, order.getTotal(), order.getOrderDate(), order.getStatus());
     }
 
     private List<OrderResponseDTO> getListOfOrders(List<Order> orders) {
