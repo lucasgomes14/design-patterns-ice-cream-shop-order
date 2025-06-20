@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record SimpleOrderRequestDTO(@NotNull @NotEmpty String customerName,
+public record SimpleOrderRequestDTO(@NotNull @NotEmpty (message = "'CustomeName' cannot be empty") String customerName,
                                     @NotNull List<IceCreamSimpleDTO> iceCreams,
                                     @NotNull DiscountType discountType) {
 }

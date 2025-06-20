@@ -6,6 +6,6 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record IceCreamSimpleDTO(@NotNull TypeIceCream iceCreamType,
-                                 @NotNull @NotEmpty String flavor,
+                                 @NotNull @NotEmpty (message = "'Flavor' cannot be empty") String flavor,
                                  @Min(1) int quantity) {
 }
