@@ -6,7 +6,6 @@ import com.iceCreamShop.DesignPatterns.dto.response.CustomerResponseDTO;
 import com.iceCreamShop.DesignPatterns.dto.response.OrderResponseDTO;
 import com.iceCreamShop.DesignPatterns.exception.IceCreamTypeNotSupportedException;
 import com.iceCreamShop.DesignPatterns.exception.OrderStateException;
-import com.iceCreamShop.DesignPatterns.model.Order;
 import com.iceCreamShop.DesignPatterns.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

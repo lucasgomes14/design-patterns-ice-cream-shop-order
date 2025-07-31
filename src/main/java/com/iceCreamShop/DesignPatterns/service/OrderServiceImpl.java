@@ -99,10 +99,14 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (order.equals(orderQueue.peek())) {
-            orderQueue.remove(order);
-            Order firstQueuedOrder = orderQueue.peek();
-            firstQueuedOrder.advanceState();
-            orderRepository.save(firstQueuedOrder);
+            if (orderQueue.size() == 1) {
+                orderQueue.remove(order);
+            } else {
+                orderQueue.remove(order);
+                Order firstQueuedOrder = orderQueue.peek();
+                firstQueuedOrder.advanceState();
+                orderRepository.save(firstQueuedOrder);
+            }
         } else {
             orderQueue.remove(order);
         }
